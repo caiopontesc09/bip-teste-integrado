@@ -1,0 +1,38 @@
+html, body { 
+  height: 100%; 
+  margin: 0; 
+  font-family: 'Roboto', sans-serif;
+}
+
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-card {
+  border-radius: 12px !important;
+}
+
+.mat-mdc-button {
+  border-radius: 8px !important;
+}
+
+.mat-mdc-raised-button {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+.mat-mdc-tab-group {
+  --mdc-tab-indicator-active-indicator-color: #1976d2;
+}
+
+.mat-mdc-tab-header {
+  border-bottom: 1px solid #e0e0e0;
+}

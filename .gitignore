@@ -1,0 +1,14 @@
+target/
+.mvn/
+mvnw
+mvnw.cmd
+.DS_Store
+*.log
+
+# Angular
+frontend/angular-app/node_modules/
+frontend/angular-app/.angular/
+frontend/angular-app/dist/
+frontend/angular-app/package-lock.json
+frontend/package-lock.json
+frontend/start-angular.sh

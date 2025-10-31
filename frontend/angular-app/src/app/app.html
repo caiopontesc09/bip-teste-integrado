@@ -1,0 +1,22 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <mat-icon>account_balance_wallet</mat-icon>
+  <span class="toolbar-title">{{ title() }}</span>
+</mat-toolbar>
+
+<div class="app-container">
+  <mat-tab-group class="main-tabs">
+    <mat-tab label="Lista de Benefícios">
+      <app-beneficio-list></app-beneficio-list>
+    </mat-tab>
+    
+    <mat-tab label="Criar Benefício">
+      <app-beneficio-form></app-beneficio-form>
+    </mat-tab>
+    
+    <mat-tab label="Transferência">
+      <app-transfer-form></app-transfer-form>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<router-outlet />

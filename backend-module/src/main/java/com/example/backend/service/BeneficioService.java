@@ -1,43 +1,38 @@
-package com.example.ejb;
+package com.example.backend.service;
 
-import jakarta.ejb.Stateless;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.LockModeType;
-import jakarta.transaction.Transactional;
+import com.example.backend.entity.Beneficio;
+import com.example.backend.repository.BeneficioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
-@Stateless
+@Service
 @Transactional
-public class BeneficioEjbService {
+public class BeneficioService {
 
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private BeneficioRepository repository;
 
     public List<Beneficio> findAll() {
-        return em.createQuery("SELECT b FROM Beneficio b WHERE b.ativo = true", Beneficio.class)
-                .getResultList();
+        return repository.findAllActive();
     }
 
-    public Beneficio findById(Long id) {
-        return em.find(Beneficio.class, id);
+    public Optional<Beneficio> findById(Long id) {
+        return repository.findById(id);
     }
 
     public Beneficio save(Beneficio beneficio) {
-        if (beneficio.getId() == null) {
-            em.persist(beneficio);
-            return beneficio;
-        } else {
-            return em.merge(beneficio);
-        }
+        return repository.save(beneficio);
     }
 
     public void delete(Long id) {
-        Beneficio beneficio = em.find(Beneficio.class, id);
-        if (beneficio != null) {
-            beneficio.setAtivo(false);
-            em.merge(beneficio);
+        Optional<Beneficio> beneficio = repository.findById(id);
+        if (beneficio.isPresent()) {
+            beneficio.get().setAtivo(false);
+            repository.save(beneficio.get());
         }
     }
 
@@ -52,15 +47,19 @@ public class BeneficioEjbService {
             throw new IllegalArgumentException("Não é possível transferir para o mesmo benefício");
         }
 
-        Beneficio from = em.find(Beneficio.class, fromId, LockModeType.OPTIMISTIC);
-        Beneficio to = em.find(Beneficio.class, toId, LockModeType.OPTIMISTIC);
+        Optional<Beneficio> fromOpt = repository.findById(fromId);
+        Optional<Beneficio> toOpt = repository.findById(toId);
 
-        if (from == null) {
+        if (fromOpt.isEmpty()) {
             throw new IllegalArgumentException("Benefício origem não encontrado: " + fromId);
         }
-        if (to == null) {
+        if (toOpt.isEmpty()) {
             throw new IllegalArgumentException("Benefício destino não encontrado: " + toId);
         }
+
+        Beneficio from = fromOpt.get();
+        Beneficio to = toOpt.get();
+
         if (!from.getAtivo()) {
             throw new IllegalArgumentException("Benefício origem está inativo");
         }
@@ -75,7 +74,7 @@ public class BeneficioEjbService {
         from.setValor(from.getValor().subtract(amount));
         to.setValor(to.getValor().add(amount));
 
-        em.merge(from);
-        em.merge(to);
+        repository.save(from);
+        repository.save(to);
     }
 }
